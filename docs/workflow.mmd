@@ -1,0 +1,11 @@
+flowchart TD
+  A[Incoming transaction] --> B{Valid request?}
+  B -->|No| X[Reject 422]
+  B -->|Yes| C{Existing ID?}
+  C -->|Same payload| R[Return saved decision]
+  C -->|Changed payload| Z[Reject 409]
+  C -->|New| O{Ordered event?}
+  O -->|No| Z
+  O -->|Yes| F[Calculate features and score]
+  F --> P[Apply thresholds]
+  P --> D[Persist and return decision]

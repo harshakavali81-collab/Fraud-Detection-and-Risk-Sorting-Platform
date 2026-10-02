@@ -1,0 +1,8 @@
+{
+  "events_scored": 300,
+  "dashboard_metrics": 3,
+  "dashboard_exceptions": 0,
+  "scoring_ms_p50": 9.791,
+  "scoring_ms_p95": 13.0251,
+  "latency_scope": "Scoring measured inside engine, excluding final insert/commit and network. Single-process local demo."
+}

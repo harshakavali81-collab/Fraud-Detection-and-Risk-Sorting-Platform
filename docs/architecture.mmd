@@ -1,0 +1,12 @@
+flowchart TD
+  H[Historical transactions] --> F[Shared feature calculation]
+  F --> T[Train and validate]
+  T --> M[Model and thresholds]
+  S[HTTP simulator or Kafka bridge] --> A[FastAPI validation]
+  A --> E[Scoring engine]
+  M --> E
+  D[(SQLite history and decisions)] --> E
+  E --> D
+  D --> V[Streamlit via API]
+  V --> R[Analyst feedback]
+  R --> D
