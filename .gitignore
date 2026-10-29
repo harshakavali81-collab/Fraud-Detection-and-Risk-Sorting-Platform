@@ -4,3 +4,17 @@ __pycache__/
 *.db
 *.db-*
 .env
+
+# Local credentials and development caches
+.env
+.env.*
+!.env.example
+!.env.*.example
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+node_modules/
+.DS_Store
+Thumbs.db

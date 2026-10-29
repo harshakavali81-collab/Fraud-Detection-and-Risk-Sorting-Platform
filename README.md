@@ -2,11 +2,54 @@
 
 Python, SQL, machine learning, FastAPI and Streamlit portfolio project for Kavali Harshavardhan.
 
-Scores incoming transactions and returns **approve**, **verify**, or **review**. These are demo decisions; no payment is actually approved or blocked.
+[Setup](#local-installation--setup-guide) · [Architecture](#architecture--system-design-diagram) · [Detailed guide](PROJECT_GUIDE.md) · [Repository standard](docs/REPOSITORY_STANDARD.md)
 
-![Architecture](docs/architecture.png)
+## Visuals
 
-## Quick start (Python 3.12 recommended)
+![Architecture](<docs/architecture.png>)
+
+Existing project visual; diagrams and illustrative graphics are not evidence of a deployed application.
+
+## Live Link / Demo
+
+Run the local demo using the setup guide below. No public deployment URL has been verified for this documentation update.
+
+## Key Features
+
+| Folder/file | Purpose |
+|---|---|
+| `src/generate.py` | Reproducible 12,000-row synthetic transaction generator |
+| `src/features.py` | Shared point-in-time feature logic |
+| `src/train.py` | Chronological split, two models, validation thresholds, holdout evaluation |
+| `src/engine.py` | Persistent SQLite scoring, idempotency, history and feedback |
+| `src/api.py` | Validated FastAPI endpoints |
+| `src/simulate.py` | Transaction replay through HTTP |
+| `dashboard.py` | Automatically refreshed review dashboard and manual scoring |
+| `src/kafka_bridge.py` | Optional Kafka producer/consumer bridge |
+| `src/monitor.py` | Reference-versus-current feature shift report |
+| `sql/` | Schema and analytical queries |
+| `notebooks/EDA.ipynb` | Re-runnable exploratory analysis |
+| `reports/` | Measured metrics, predictions, plots, test results and Excel workbook |
+| `docs/` | Full guide, PDF, architecture, workflow, model card and interview notes |
+| `tests/` | API and data-integrity tests |
+| `compose.yaml` | Local API/dashboard containers with persistent state |
+
+## Tech Stack
+
+![Python](https://img.shields.io/badge/Python-334155?style=flat-square) ![FastAPI](https://img.shields.io/badge/FastAPI-334155?style=flat-square) ![Streamlit](https://img.shields.io/badge/Streamlit-334155?style=flat-square) ![scikit-learn](https://img.shields.io/badge/scikit--learn-334155?style=flat-square) ![Pandas](https://img.shields.io/badge/Pandas-334155?style=flat-square) ![NumPy](https://img.shields.io/badge/NumPy-334155?style=flat-square) ![SQL](https://img.shields.io/badge/SQL-334155?style=flat-square) ![Docker](https://img.shields.io/badge/Docker-334155?style=flat-square)
+
+Dependency versions and optional packages are defined in the repository manifests.
+
+## Architecture / System Design Diagram
+
+[Architecture documentation / diagram](<docs/architecture.png>)
+
+## Local Installation & Setup Guide
+
+```bash
+git clone https://github.com/harshakavali81-collab/Fraud-Detection-and-Risk-Sorting-Platform.git
+cd Fraud-Detection-and-Risk-Sorting-Platform
+```
 
 Extract the ZIP, open the `fraud-platform` folder in VS Code and open its terminal.
 
@@ -38,73 +81,41 @@ python -m src.simulate --count 300 --delay 0.1
 
 The included dataset and model allow a quick demo. Always retrain after changing Python/scikit-learn versions. Load only trusted joblib files.
 
-## What is included
+## Challenges & Solutions
 
-| Folder/file | Purpose |
-|---|---|
-| `src/generate.py` | Reproducible 12,000-row synthetic transaction generator |
-| `src/features.py` | Shared point-in-time feature logic |
-| `src/train.py` | Chronological split, two models, validation thresholds, holdout evaluation |
-| `src/engine.py` | Persistent SQLite scoring, idempotency, history and feedback |
-| `src/api.py` | Validated FastAPI endpoints |
-| `src/simulate.py` | Transaction replay through HTTP |
-| `dashboard.py` | Automatically refreshed review dashboard and manual scoring |
-| `src/kafka_bridge.py` | Optional Kafka producer/consumer bridge |
-| `src/monitor.py` | Reference-versus-current feature shift report |
-| `sql/` | Schema and analytical queries |
-| `notebooks/EDA.ipynb` | Re-runnable exploratory analysis |
-| `reports/` | Measured metrics, predictions, plots, test results and Excel workbook |
-| `docs/` | Full guide, PDF, architecture, workflow, model card and interview notes |
-| `tests/` | API and data-integrity tests |
-| `compose.yaml` | Local API/dashboard containers with persistent state |
+**Repository organization:** this project uses `src/`. Keeping those paths stable avoids breaking imports, asset links and deployment commands while the documentation follows a shared format. Project-specific technical limitations and prior release evidence are retained in [Project guide](PROJECT_GUIDE.md).
 
-## Measured synthetic holdout results
+## Future Improvements
 
-7,200 training / 2,400 validation / 2,400 test rows, ordered by time.
-Selected model: **random_forest**, based only on validation average precision.
+- Capture a reproducible end-to-end demo with runtime versions and sample inputs.
+- Expand regression checks for invalid inputs and documented edge cases.
+- Record measured results, data provenance and deployment limitations alongside each release.
 
-| Metric | Result |
-|---|---:|
-| Test fraud prevalence | 1.25% |
-| Average precision | 0.1807 |
-| Recall at verify threshold | 53.33% |
-| Precision at verify threshold | 5.59% |
-| False-positive rate | 11.39% |
-| Alert rate | 11.92% |
-| Fraud amount captured by alerts | 86.49% |
+## Scope and supporting evidence
 
-The model misses 14 of 30 synthetic fraud events and raises 270 false alerts. This is a learning baseline, not production evidence. Average precision is the discrete AP metric, not trapezoidal PR-AUC. Score = 100 times model output; it is **not a calibrated probability**.
+Python, SQL, machine learning, FastAPI and Streamlit portfolio project for Kavali Harshavardhan.
 
-## Workflow
+Scores incoming transactions and returns **approve**, **verify**, or **review**. These are demo decisions; no payment is actually approved or blocked.
 
-Define event contract -> generate labeled synthetic transactions -> validate -> calculate historical features -> split 60/20/20 by time -> train -> choose model and thresholds on validation -> evaluate once on holdout -> score HTTP events -> store decisions -> display queue -> collect outcomes -> monitor -> retrain under review.
+## Repository Structure
 
-## Local containers
+| Location | Purpose |
+| --- | --- |
+| `src/` | Source modules |
+| `tests/` | Tests |
+| `docs/` | Documentation |
+| `data/` | Data and samples |
+| `sql/` | SQL schema and analysis |
+| `scripts/` | Automation scripts |
+| `.github/` | Issue forms, PR template and automated checks |
 
-```bash
-docker compose up --build
-```
+[Complete file inventory and workflow](docs/REPOSITORY_STANDARD.md). Runtime entry points retain their existing paths.
 
-Docker files are supplied; container execution is separate from the verified Python run. Bindings are local-only. Do not expose this unauthenticated demo to the public internet.
+## Workflow & Tracking
 
-## Optional Kafka
+Use the [bug and feature forms](https://github.com/harshakavali81-collab/Fraud-Detection-and-Risk-Sorting-Platform/issues/new/choose) to define work with acceptance criteria. Keep tasks in Todo → In progress → Review → Done, and link a pull request with `Closes #<number>`. See [the maintenance workflow](docs/REPOSITORY_STANDARD.md#workflow).
 
-See `docs/KAFKA.md`. The HTTP simulator is the default working path. Kafka requires your own broker and `requirements-kafka.txt`; a broker is not bundled or hosted.
+## License
 
-## Reproduce data and evaluation
+Original project software is available under the [MIT License](LICENSE). See [licensing scope](docs/LICENSING.md) for third-party and data exclusions.
 
-```bash
-python -m src.generate
-python -m src.train
-python -m src.monitor
-```
-
-Seed 42. All amounts are INR, timestamps UTC, and identities synthetic. Labels are sampled by the generator's artificial process. No external dataset or real customer information is used.
-
-## State and limitations
-
-A new live database has no customer history. Replay from the beginning to warm it. Do not compare cold-start scores directly with holdout scores, whose features include preceding history. Replay is idempotent; changed payloads under the same ID return 409. Events must be strictly ordered per customer; late events return 409. After manually scoring current-time events, use a fresh database to replay historical events for that customer (`FRAUD_DB` environment variable).
-
-SQLite serializes scoring writes. Full per-customer history scans are suitable for a small demo. Kafka/Redis/PostgreSQL scaling, calibration, real labels, authentication, load tests, and public hosting are not claimed complete.
-
-Full explanation: [Project guide](docs/PROJECT_GUIDE.md). Printable report: [PDF](docs/Fraud_Platform_Guide.pdf). Workbook: [Excel](reports/Fraud_Analytics.xlsx).
